@@ -2,6 +2,6 @@
 
 Thingy, the home inventory.
 
-## Flutter App
+## Flutter
 
 This is the main frontend for thingy built with flutter.

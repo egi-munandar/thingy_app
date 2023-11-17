@@ -31,6 +31,30 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    MCEditRoute.name: (routeData) {
+      final pathParams = routeData.inheritedPathParams;
+      final args = routeData.argsAs<MCEditRouteArgs>(
+          orElse: () => MCEditRouteArgs(mcId: pathParams.getInt('id')));
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: MCEditScreen(
+          key: args.key,
+          mcId: args.mcId,
+        ),
+      );
+    },
+    MasterCurrencyRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MasterCurrencyScreen(),
+      );
+    },
+    MasterInstanceRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MasterInstanceScreen(),
+      );
+    },
     MasterItemRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -101,6 +125,72 @@ class LoginRouteArgs {
   String toString() {
     return 'LoginRouteArgs{key: $key, onResult: $onResult}';
   }
+}
+
+/// generated route for
+/// [MCEditScreen]
+class MCEditRoute extends PageRouteInfo<MCEditRouteArgs> {
+  MCEditRoute({
+    Key? key,
+    required int mcId,
+    List<PageRouteInfo>? children,
+  }) : super(
+          MCEditRoute.name,
+          args: MCEditRouteArgs(
+            key: key,
+            mcId: mcId,
+          ),
+          rawPathParams: {'id': mcId},
+          initialChildren: children,
+        );
+
+  static const String name = 'MCEditRoute';
+
+  static const PageInfo<MCEditRouteArgs> page = PageInfo<MCEditRouteArgs>(name);
+}
+
+class MCEditRouteArgs {
+  const MCEditRouteArgs({
+    this.key,
+    required this.mcId,
+  });
+
+  final Key? key;
+
+  final int mcId;
+
+  @override
+  String toString() {
+    return 'MCEditRouteArgs{key: $key, mcId: $mcId}';
+  }
+}
+
+/// generated route for
+/// [MasterCurrencyScreen]
+class MasterCurrencyRoute extends PageRouteInfo<void> {
+  const MasterCurrencyRoute({List<PageRouteInfo>? children})
+      : super(
+          MasterCurrencyRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MasterCurrencyRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [MasterInstanceScreen]
+class MasterInstanceRoute extends PageRouteInfo<void> {
+  const MasterInstanceRoute({List<PageRouteInfo>? children})
+      : super(
+          MasterInstanceRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MasterInstanceRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for
