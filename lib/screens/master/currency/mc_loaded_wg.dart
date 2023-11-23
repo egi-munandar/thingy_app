@@ -1,9 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thingy_app/constants.dart';
+import 'package:thingy_app/logic/cubit/currency_cubit.dart';
+import 'package:thingy_app/logic/repository/master_repo.dart';
 import 'package:thingy_app/models/currency_model.dart';
 import 'package:thingy_app/routes/app_router.dart';
+import 'package:toast/toast.dart';
 
 class MCLoadedWg extends StatefulWidget {
   final List<CurrencyModel> curs;
@@ -49,6 +53,7 @@ class _MCLoadedWgState extends State<MCLoadedWg> {
   Widget build(BuildContext context) {
     Size mq = MediaQuery.of(context).size;
     List<DataColumn> cols = [
+      const DataColumn(label: Expanded(child: Text("Action"))),
       DataColumn(
         onSort: (ind, asc) => sortColumn(ind, asc),
         label: const Expanded(
@@ -90,59 +95,74 @@ class _MCLoadedWgState extends State<MCLoadedWg> {
       ),
     ];
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            TextFormField(
-              controller: searchText,
-              onFieldSubmitted: (_) => searchList(),
-              validator: (val) =>
-                  val == null || val.isEmpty ? 'Please fill your email' : null,
-              decoration: InputDecoration(
-                labelText: "Search...",
-                hintText: "Find Currency...",
-                suffixIcon: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      crs = widget.curs;
-                      searchText.text = '';
-                    });
-                  },
-                  icon: const Icon(Icons.clear),
-                  color: Theme.of(context).primaryColor,
+      child: RefreshIndicator(
+        onRefresh: () =>
+            BlocProvider.of<CurrencyCubit>(context).getCurrencies(),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              TextFormField(
+                controller: searchText,
+                onFieldSubmitted: (_) => searchList(),
+                validator: (val) => val == null || val.isEmpty
+                    ? 'Please fill your email'
+                    : null,
+                decoration: InputDecoration(
+                  labelText: "Search...",
+                  hintText: "Find Currency...",
+                  prefixIcon: mq.width > Consts.wdt.sm
+                      ? IconButton(
+                          onPressed: () =>
+                              BlocProvider.of<CurrencyCubit>(context)
+                                  .getCurrencies(),
+                          icon: const Icon(Icons.refresh_rounded),
+                          tooltip: "Refresh Data",
+                        )
+                      : null,
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        crs = widget.curs;
+                        searchText.text = '';
+                      });
+                    },
+                    icon: const Icon(Icons.clear),
+                    color: Theme.of(context).primaryColor,
+                    tooltip: 'Clear Search',
+                  ),
                 ),
               ),
-            ),
-            mq.width <= Consts.wdt.sm
-                ? SizedBox(
-                    height: mq.height,
-                    child: ListView.builder(
-                      itemBuilder: (context, index) {
-                        CurrencyModel c = crs[index];
-                        return ListTile(
-                          onTap: () =>
-                              context.router.push(MCEditRoute(mcId: c.id)),
-                          leading: CircleAvatar(
-                            child: Text(
-                              c.symbol,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
+              mq.width <= Consts.wdt.sm
+                  ? SizedBox(
+                      height: mq.height,
+                      child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          CurrencyModel c = crs[index];
+                          return ListTile(
+                            onTap: () =>
+                                context.router.push(MCEditRoute(mcId: c.id)),
+                            leading: CircleAvatar(
+                              child: Text(
+                                c.symbol,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
-                          ),
-                          title: Text(c.name),
-                          subtitle: Text(c.code),
-                        );
-                      },
-                      itemCount: crs.length,
-                    ),
-                  )
-                : LgView(
-                    sortAsc: sortAsc,
-                    sortIndex: sortIndex,
-                    cols: cols,
-                    crs: crs),
-          ],
+                            title: Text(c.name),
+                            subtitle: Text(c.code),
+                          );
+                        },
+                        itemCount: crs.length,
+                      ),
+                    )
+                  : LgView(
+                      sortAsc: sortAsc,
+                      sortIndex: sortIndex,
+                      cols: cols,
+                      crs: crs),
+            ],
+          ),
         ),
       ),
     );
@@ -207,7 +227,28 @@ class LgView extends StatelessWidget {
         columns: cols,
         rows: crs
             .map((CurrencyModel c) => DataRow(cells: [
-                  DataCell(Text(c.symbol)),
+                  DataCell(Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: IconButton(
+                          onPressed: () =>
+                              context.router.push(MCEditRoute(mcId: c.id)),
+                          icon: const Icon(Icons.edit_rounded),
+                          color: Colors.amber,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => deleteCurr(context, c),
+                        icon: const Icon(Icons.delete),
+                        color: Colors.red,
+                      )
+                    ],
+                  )),
+                  DataCell(
+                    Text(c.symbol),
+                  ),
                   DataCell(Text(c.name)),
                   DataCell(Text(c.symbolNative)),
                   DataCell(Text(c.decimalDigits.toString())),
@@ -216,6 +257,34 @@ class LgView extends StatelessWidget {
                   DataCell(Text(c.namePlural)),
                 ]))
             .toList(),
+      ),
+    );
+  }
+
+  Future<void> deleteCurr(BuildContext context, CurrencyModel curr) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog.adaptive(
+        title: const Text(
+          "Delete currency?",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Text("${curr.symbol} ${curr.name}"),
+        actions: [
+          TextButton(
+              onPressed: () async {
+                await MasterRepo()
+                    .deleteCurrency(curr.id)
+                    .then((_) => Toast.show("Currency Deleted!", duration: 2))
+                    .catchError((er) => Consts().errDialog(context, er));
+              },
+              child: const Text(
+                "YES",
+                style: TextStyle(color: Colors.red),
+              )),
+          TextButton(
+              onPressed: () => Navigator.pop(context), child: const Text("NO")),
+        ],
       ),
     );
   }

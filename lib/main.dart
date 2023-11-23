@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:thingy_app/logic/cubit/auth_cubit.dart';
 import 'package:thingy_app/routes/app_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:toast/toast.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    ToastContext().init(context);
     return MultiBlocProvider(
         providers: [
           BlocProvider(

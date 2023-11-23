@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thingy_app/constants.dart';
 import 'package:thingy_app/logic/cubit/currency_cubit.dart';
+import 'package:thingy_app/routes/app_router.dart';
+import 'package:thingy_app/screens/app_drawer.dart';
 import 'package:thingy_app/screens/error_screen.dart';
 import 'package:thingy_app/screens/loading_screen.dart';
 import 'package:thingy_app/screens/master/currency/mc_loaded_wg.dart';
@@ -13,21 +15,21 @@ class MasterCurrencyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size mq = MediaQuery.of(context).size;
-    return BlocProvider(
-      create: (context) => CurrencyCubit(),
-      child: Expanded(
+    return Scaffold(
+      drawer: const AppDrawer(),
+      appBar: AppBar(
+          title: Text(
+        "Currencies",
+        style: TextStyle(fontSize: Consts.fSize.h3),
+      )),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.router.push(const McAddRoute()),
+        tooltip: "Add Currency",
+        child: const Icon(Icons.add_rounded),
+      ),
+      body: BlocProvider(
+        create: (context) => CurrencyCubit(),
         child: Column(children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                "Currencies",
-                style: TextStyle(fontSize: Consts.fSize.h3),
-              ),
-            ]),
-          ),
           Expanded(
             child: BlocBuilder<CurrencyCubit, CurrencyState>(
               builder: (context, state) {

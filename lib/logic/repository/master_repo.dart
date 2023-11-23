@@ -54,4 +54,74 @@ class MasterRepo {
       throw "Server Error! ${res.statusCode}";
     }
   }
+
+  Future<CurrencyModel> updateCurrency(
+      Map<String, dynamic> data, num currencyId) async {
+    final UserModel user = await Consts.fetchUser();
+    final res = await http
+        .put(Uri.parse("$baseUrl/currency/$currencyId"),
+            headers: {
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ${user.apiToken}',
+            },
+            body: data)
+        .catchError((_) => throw ('Can\'t connect to server'));
+    if (res.statusCode == 200) {
+      Map<String, dynamic> map = json.decode(res.body);
+      return CurrencyModel.fromMap(map);
+    } else if (res.statusCode == 422) {
+      final Map<String, dynamic> err = jsonDecode(res.body);
+      String erStr = 'Server Error';
+      if (err.containsKey('errors')) {
+        erStr = Consts().parseErrInput(err['errors']);
+      }
+      throw erStr;
+    } else {
+      throw "Server Error! ${res.statusCode}";
+    }
+  }
+
+  Future<CurrencyModel> storeCurrency(Map<String, dynamic> data) async {
+    final UserModel user = await Consts.fetchUser();
+    final res = await http
+        .post(Uri.parse("$baseUrl/currency"),
+            headers: {
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ${user.apiToken}',
+            },
+            body: data)
+        .catchError((_) => throw ('Can\'t connect to server'));
+    if (res.statusCode == 200) {
+      return CurrencyModel.fromJson(res.body);
+    } else if (res.statusCode == 422) {
+      final Map<String, dynamic> err = jsonDecode(res.body);
+      String erStr = 'Server Error';
+      if (err.containsKey('errors')) {
+        erStr = Consts().parseErrInput(err['errors']);
+      }
+      throw erStr;
+    } else {
+      throw "Server Error! ${res.statusCode}";
+    }
+  }
+
+  Future<void> deleteCurrency(num currencyId) async {
+    final UserModel user = await Consts.fetchUser();
+    final res =
+        await http.delete(Uri.parse("$baseUrl/currency/$currencyId"), headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${user.apiToken}',
+    }).catchError((_) => throw ('Can\'t connect to server'));
+    if (res.statusCode == 200) {
+    } else if (res.statusCode == 422) {
+      final Map<String, dynamic> err = jsonDecode(res.body);
+      String erStr = 'Server Error';
+      if (err.containsKey('errors')) {
+        erStr = Consts().parseErrInput(err['errors']);
+      }
+      throw erStr;
+    } else {
+      throw "Server Error! ${res.statusCode}";
+    }
+  }
 }

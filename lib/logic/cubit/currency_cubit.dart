@@ -9,11 +9,11 @@ class CurrencyCubit extends Cubit<CurrencyState> {
   CurrencyCubit() : super(CurrencyInitial());
   Future<void> getCurrencies() async {
     emit(CurrencyLoading());
-    final List<CurrencyModel> curs =
-        await MasterRepo().getCurrencies().catchError((er) {
+    await MasterRepo().getCurrencies().then((v) {
+      emit(CurrencyLoaded(currencies: v));
+    }).catchError((er) {
       emit(CurrencyError(msg: er.toString()));
     });
-    emit(CurrencyLoaded(currencies: curs));
   }
 
   Future<void> viewCurrency(int currencyId) async {

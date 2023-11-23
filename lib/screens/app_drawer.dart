@@ -24,13 +24,26 @@ class AppDrawer extends StatelessWidget {
                 ? context.router.pushNamed('/home')
                 : null,
           ),
-          ListTile(
-            selected: context.routeData.path == '/master',
+          ExpansionTile(
             title: const Text("Master"),
-            onTap: () => context.routeData.name != MasterRoute.name
-                ? context.router.pushNamed('/master')
-                : null,
-          ),
+            initiallyExpanded: context.routeData.name.contains('Master'),
+            children: [
+              ListTile(
+                selected: context.routeData.name == MasterItemRoute.name,
+                title: const Text("Item"),
+                onTap: () => context.routeData.name != MasterItemRoute.name
+                    ? context.router.push(const MasterItemRoute())
+                    : null,
+              ),
+              ListTile(
+                selected: context.routeData.name == MasterCurrencyRoute.name,
+                title: const Text("Currency"),
+                onTap: () => context.routeData.name != MasterCurrencyRoute.name
+                    ? context.router.pushNamed('/master/currency')
+                    : null,
+              ),
+            ],
+          )
         ],
       ),
     );

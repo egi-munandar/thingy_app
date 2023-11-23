@@ -73,6 +73,12 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const MasterScreen(),
       );
     },
+    McAddRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const McAddScreen(),
+      );
+    },
   };
 }
 
@@ -231,6 +237,20 @@ class MasterRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'MasterRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [McAddScreen]
+class McAddRoute extends PageRouteInfo<void> {
+  const McAddRoute({List<PageRouteInfo>? children})
+      : super(
+          McAddRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'McAddRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
