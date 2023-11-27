@@ -51,6 +51,7 @@ class _MCLoadedWgState extends State<MCLoadedWg> {
 
   @override
   Widget build(BuildContext context) {
+    ToastContext().init(context);
     Size mq = MediaQuery.of(context).size;
     List<DataColumn> cols = [
       const DataColumn(label: Expanded(child: Text("Action"))),
@@ -140,6 +141,7 @@ class _MCLoadedWgState extends State<MCLoadedWg> {
                         itemBuilder: (context, index) {
                           CurrencyModel c = crs[index];
                           return ListTile(
+                            onLongPress: () => deleteCurr(context, c),
                             onTap: () =>
                                 context.router.push(MCEditRoute(mcId: c.id)),
                             leading: CircleAvatar(
@@ -200,6 +202,37 @@ class _MCLoadedWgState extends State<MCLoadedWg> {
         break;
       default:
     }
+  }
+
+  Future<void> deleteCurr(BuildContext context, CurrencyModel curr) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) => AlertDialog.adaptive(
+        title: const Text(
+          "Delete currency?",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Text("${curr.symbol} ${curr.name}"),
+        actions: [
+          TextButton(
+              onPressed: () async {
+                await MasterRepo().deleteCurrency(curr.id).then((_) {
+                  BlocProvider.of<CurrencyCubit>(context).getCurrencies();
+                  Toast.show("Currency Deleted!", duration: 2);
+                  Navigator.pop(ctx);
+                }).catchError((er) {
+                  Consts().errDialog(ctx, er);
+                });
+              },
+              child: const Text(
+                "YES",
+                style: TextStyle(color: Colors.red),
+              )),
+          TextButton(
+              onPressed: () => Navigator.pop(context), child: const Text("NO")),
+        ],
+      ),
+    );
   }
 }
 
@@ -264,7 +297,7 @@ class LgView extends StatelessWidget {
   Future<void> deleteCurr(BuildContext context, CurrencyModel curr) async {
     showDialog(
       context: context,
-      builder: (BuildContext context) => AlertDialog.adaptive(
+      builder: (BuildContext ctx) => AlertDialog.adaptive(
         title: const Text(
           "Delete currency?",
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -273,10 +306,13 @@ class LgView extends StatelessWidget {
         actions: [
           TextButton(
               onPressed: () async {
-                await MasterRepo()
-                    .deleteCurrency(curr.id)
-                    .then((_) => Toast.show("Currency Deleted!", duration: 2))
-                    .catchError((er) => Consts().errDialog(context, er));
+                await MasterRepo().deleteCurrency(curr.id).then((_) {
+                  BlocProvider.of<CurrencyCubit>(context).getCurrencies();
+                  Toast.show("Currency Deleted!", duration: 2);
+                  Navigator.pop(ctx);
+                }).catchError((er) {
+                  Consts().errDialog(ctx, er);
+                });
               },
               child: const Text(
                 "YES",
