@@ -15,44 +15,47 @@ class MasterCurrencyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: const AppDrawer(),
-      appBar: AppBar(
-          title: Text(
-        "Currencies",
-        style: TextStyle(fontSize: Consts.fSize.h3),
-      )),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.router.push(const McAddRoute()),
-        tooltip: "Add Currency",
-        child: const Icon(Icons.add_rounded),
-      ),
-      body: BlocProvider(
-        create: (context) => CurrencyCubit(),
-        child: Column(children: [
-          Expanded(
-            child: BlocBuilder<CurrencyCubit, CurrencyState>(
-              builder: (context, state) {
-                if (state is CurrencyInitial) {
-                  BlocProvider.of<CurrencyCubit>(context).getCurrencies();
-                  return const LoadingScreen();
-                } else if (state is CurrencyLoading) {
-                  return const LoadingScreen(msg: 'Loading Currencies...');
-                } else if (state is CurrencyLoaded) {
-                  return MCLoadedWg(curs: state.currencies);
-                } else if (state is CurrencyError) {
-                  return ErrorScreen(
-                    msg: state.msg,
-                  );
-                } else {
-                  return const ErrorScreen(
-                    msg: 'Please refresh this page.',
-                  );
-                }
+    return BlocProvider(
+      create: (context) => CurrencyCubit(),
+      child: BlocBuilder<CurrencyCubit, CurrencyState>(
+        builder: (context, state) {
+          if (state is CurrencyInitial) {
+            BlocProvider.of<CurrencyCubit>(context).getCurrencies();
+          }
+          return Scaffold(
+            drawer: const AppDrawer(),
+            appBar: AppBar(
+                title: Text(
+              "Currencies",
+              style: TextStyle(fontSize: Consts.fSize.h3),
+            )),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                context.router.push(McAddRoute(
+                    created: (c) => c
+                        ? BlocProvider.of<CurrencyCubit>(context)
+                            .getCurrencies()
+                        : null));
               },
+              tooltip: "Add Currency",
+              child: const Icon(Icons.add_rounded),
             ),
-          )
-        ]),
+            body: Column(children: [
+              Expanded(
+                  child: (state is CurrencyLoading)
+                      ? const LoadingScreen(msg: 'Loading Currencies...')
+                      : (state is CurrencyLoaded)
+                          ? MCLoadedWg(curs: state.currencies)
+                          : (state is CurrencyError)
+                              ? ErrorScreen(
+                                  msg: state.msg,
+                                )
+                              : const LoadingScreen(
+                                  msg: "Loading...",
+                                )),
+            ]),
+          );
+        },
       ),
     );
   }

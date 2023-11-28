@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thingy_app/logic/cubit/auth_cubit.dart';
-import 'package:thingy_app/routes/app_router.dart';
 import 'package:thingy_app/screens/app_drawer.dart';
 
 @RoutePage()
@@ -42,12 +41,6 @@ class HomeScreen extends StatelessWidget {
                 },
                 child: const Text("Logout")),
           ),
-          Center(
-            child: ElevatedButton(
-              onPressed: () => context.router.push(MCEditRoute(mcId: 1)),
-              child: const Text("navigate"),
-            ),
-          )
         ],
       ),
     );

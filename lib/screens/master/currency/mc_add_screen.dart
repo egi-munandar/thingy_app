@@ -1,15 +1,17 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:thingy_app/constants.dart';
 import 'package:thingy_app/logic/repository/master_repo.dart';
 import 'package:toast/toast.dart';
 
 @RoutePage()
 class McAddScreen extends StatefulWidget {
-  const McAddScreen({super.key});
+  const McAddScreen({super.key, required this.created});
 
   @override
   State<McAddScreen> createState() => _McAddScreenState();
+  final Function(bool cr) created;
 }
 
 class _McAddScreenState extends State<McAddScreen> {
@@ -90,6 +92,9 @@ class _McAddScreenState extends State<McAddScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
                         controller: tDecimalDigits,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
                         decoration: const InputDecoration(
                           label: Text("Decimal Digits"),
                         ),
@@ -98,6 +103,9 @@ class _McAddScreenState extends State<McAddScreen> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
                         controller: tRounding,
                         decoration: const InputDecoration(
                           label: Text("Rounding"),
@@ -140,6 +148,7 @@ class _McAddScreenState extends State<McAddScreen> {
         'code': tCode.text,
         'name_plural': tNamePlural.text,
       }).then((_) {
+        widget.created(true);
         Toast.show("New Currency Saved!", duration: 2, gravity: Toast.bottom);
         context.router.back();
       }).catchError((er) {

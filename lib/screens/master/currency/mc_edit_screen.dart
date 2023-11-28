@@ -12,9 +12,11 @@ import 'package:toast/toast.dart';
 @RoutePage()
 class MCEditScreen extends StatefulWidget {
   final int mcId;
-  const MCEditScreen({super.key, @PathParam('id') required this.mcId});
+  const MCEditScreen(
+      {super.key, @PathParam('id') required this.mcId, required this.updated});
   @override
   State<MCEditScreen> createState() => _MCEditScreenState();
+  final Function(bool upd) updated;
 }
 
 class _MCEditScreenState extends State<MCEditScreen> {
@@ -188,6 +190,7 @@ class _MCEditScreenState extends State<MCEditScreen> {
         'code': tCode.text,
         'name_plural': tNamePlural.text,
       }, widget.mcId).then((_) {
+        widget.updated(true);
         Toast.show("Currency Updated!", duration: 2, gravity: Toast.bottom);
         context.router.back();
       }).catchError((er) {

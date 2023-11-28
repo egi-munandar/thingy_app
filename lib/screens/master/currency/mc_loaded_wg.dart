@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thingy_app/constants.dart';
 import 'package:thingy_app/logic/cubit/currency_cubit.dart';
@@ -142,8 +141,16 @@ class _MCLoadedWgState extends State<MCLoadedWg> {
                           CurrencyModel c = crs[index];
                           return ListTile(
                             onLongPress: () => deleteCurr(context, c),
-                            onTap: () =>
-                                context.router.push(MCEditRoute(mcId: c.id)),
+                            onTap: () {
+                              context.router.push(MCEditRoute(
+                                  mcId: c.id,
+                                  updated: (u) {
+                                    if (u) {
+                                      BlocProvider.of<CurrencyCubit>(context)
+                                          .getCurrencies();
+                                    }
+                                  }));
+                            },
                             leading: CircleAvatar(
                               child: Text(
                                 c.symbol,
@@ -266,8 +273,16 @@ class LgView extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(right: 10),
                         child: IconButton(
-                          onPressed: () =>
-                              context.router.push(MCEditRoute(mcId: c.id)),
+                          onPressed: () {
+                            context.router.push(MCEditRoute(
+                                mcId: c.id,
+                                updated: (u) {
+                                  if (u) {
+                                    BlocProvider.of<CurrencyCubit>(context)
+                                        .getCurrencies();
+                                  }
+                                }));
+                          },
                           icon: const Icon(Icons.edit_rounded),
                           color: Colors.amber,
                         ),
