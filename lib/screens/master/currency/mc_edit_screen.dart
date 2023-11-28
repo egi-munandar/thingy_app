@@ -165,7 +165,11 @@ class _MCEditScreenState extends State<MCEditScreen> {
                   ),
                 );
               } else if (state is CurrencyError) {
-                return ErrorScreen(msg: state.msg);
+                return ErrorScreen(
+                  msg: state.msg,
+                  refresh: () =>
+                      BlocProvider.of<CurrencyCubit>(context).getCurrencies(),
+                );
               } else {
                 return const LoadingScreen();
               }

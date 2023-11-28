@@ -32,14 +32,13 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     MCEditRoute.name: (routeData) {
-      final pathParams = routeData.inheritedPathParams;
-      final args = routeData.argsAs<MCEditRouteArgs>(
-          orElse: () => MCEditRouteArgs(mcId: pathParams.getInt('id')));
+      final args = routeData.argsAs<MCEditRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: MCEditScreen(
           key: args.key,
           mcId: args.mcId,
+          updated: args.updated,
         ),
       );
     },
@@ -74,9 +73,34 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     McAddRoute.name: (routeData) {
+      final args = routeData.argsAs<McAddRouteArgs>();
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const McAddScreen(),
+        child: McAddScreen(
+          key: args.key,
+          created: args.created,
+        ),
+      );
+    },
+    MiAddRoute.name: (routeData) {
+      final args = routeData.argsAs<MiAddRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: MiAddScreen(
+          key: args.key,
+          instanceAdded: args.instanceAdded,
+        ),
+      );
+    },
+    MiEditRoute.name: (routeData) {
+      final args = routeData.argsAs<MiEditRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: MiEditScreen(
+          key: args.key,
+          updated: args.updated,
+          miId: args.miId,
+        ),
       );
     },
   };
@@ -139,12 +163,14 @@ class MCEditRoute extends PageRouteInfo<MCEditRouteArgs> {
   MCEditRoute({
     Key? key,
     required int mcId,
+    required dynamic Function(bool) updated,
     List<PageRouteInfo>? children,
   }) : super(
           MCEditRoute.name,
           args: MCEditRouteArgs(
             key: key,
             mcId: mcId,
+            updated: updated,
           ),
           rawPathParams: {'id': mcId},
           initialChildren: children,
@@ -159,15 +185,18 @@ class MCEditRouteArgs {
   const MCEditRouteArgs({
     this.key,
     required this.mcId,
+    required this.updated,
   });
 
   final Key? key;
 
   final int mcId;
 
+  final dynamic Function(bool) updated;
+
   @override
   String toString() {
-    return 'MCEditRouteArgs{key: $key, mcId: $mcId}';
+    return 'MCEditRouteArgs{key: $key, mcId: $mcId, updated: $updated}';
   }
 }
 
@@ -243,14 +272,117 @@ class MasterRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [McAddScreen]
-class McAddRoute extends PageRouteInfo<void> {
-  const McAddRoute({List<PageRouteInfo>? children})
-      : super(
+class McAddRoute extends PageRouteInfo<McAddRouteArgs> {
+  McAddRoute({
+    Key? key,
+    required dynamic Function(bool) created,
+    List<PageRouteInfo>? children,
+  }) : super(
           McAddRoute.name,
+          args: McAddRouteArgs(
+            key: key,
+            created: created,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'McAddRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static const PageInfo<McAddRouteArgs> page = PageInfo<McAddRouteArgs>(name);
+}
+
+class McAddRouteArgs {
+  const McAddRouteArgs({
+    this.key,
+    required this.created,
+  });
+
+  final Key? key;
+
+  final dynamic Function(bool) created;
+
+  @override
+  String toString() {
+    return 'McAddRouteArgs{key: $key, created: $created}';
+  }
+}
+
+/// generated route for
+/// [MiAddScreen]
+class MiAddRoute extends PageRouteInfo<MiAddRouteArgs> {
+  MiAddRoute({
+    Key? key,
+    required dynamic Function(bool) instanceAdded,
+    List<PageRouteInfo>? children,
+  }) : super(
+          MiAddRoute.name,
+          args: MiAddRouteArgs(
+            key: key,
+            instanceAdded: instanceAdded,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'MiAddRoute';
+
+  static const PageInfo<MiAddRouteArgs> page = PageInfo<MiAddRouteArgs>(name);
+}
+
+class MiAddRouteArgs {
+  const MiAddRouteArgs({
+    this.key,
+    required this.instanceAdded,
+  });
+
+  final Key? key;
+
+  final dynamic Function(bool) instanceAdded;
+
+  @override
+  String toString() {
+    return 'MiAddRouteArgs{key: $key, instanceAdded: $instanceAdded}';
+  }
+}
+
+/// generated route for
+/// [MiEditScreen]
+class MiEditRoute extends PageRouteInfo<MiEditRouteArgs> {
+  MiEditRoute({
+    Key? key,
+    required dynamic Function(bool) updated,
+    required int miId,
+    List<PageRouteInfo>? children,
+  }) : super(
+          MiEditRoute.name,
+          args: MiEditRouteArgs(
+            key: key,
+            updated: updated,
+            miId: miId,
+          ),
+          rawPathParams: {'id': miId},
+          initialChildren: children,
+        );
+
+  static const String name = 'MiEditRoute';
+
+  static const PageInfo<MiEditRouteArgs> page = PageInfo<MiEditRouteArgs>(name);
+}
+
+class MiEditRouteArgs {
+  const MiEditRouteArgs({
+    this.key,
+    required this.updated,
+    required this.miId,
+  });
+
+  final Key? key;
+
+  final dynamic Function(bool) updated;
+
+  final int miId;
+
+  @override
+  String toString() {
+    return 'MiEditRouteArgs{key: $key, updated: $updated, miId: $miId}';
+  }
 }

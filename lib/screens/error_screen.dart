@@ -3,7 +3,8 @@ import 'package:thingy_app/constants.dart';
 
 class ErrorScreen extends StatelessWidget {
   final String msg;
-  const ErrorScreen({super.key, this.msg = 'Error'});
+  final Function() refresh;
+  const ErrorScreen({super.key, this.msg = 'Error', required this.refresh});
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +25,7 @@ class ErrorScreen extends StatelessWidget {
           msg,
           style: TextStyle(fontSize: Consts.fSize.h6),
         ),
+        IconButton(onPressed: refresh, icon: const Icon(Icons.refresh))
       ],
     );
   }

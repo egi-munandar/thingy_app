@@ -42,6 +42,13 @@ class AppDrawer extends StatelessWidget {
                     ? context.router.pushNamed('/master/currency')
                     : null,
               ),
+              ListTile(
+                selected: context.routeData.name == MasterInstanceRoute.name,
+                title: const Text("Instance"),
+                onTap: () => context.routeData.name != MasterInstanceRoute.name
+                    ? context.router.pushNamed('/master/instance')
+                    : null,
+              ),
             ],
           )
         ],

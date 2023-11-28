@@ -6,6 +6,8 @@ import 'package:thingy_app/screens/master/master_screen.dart';
 import 'package:thingy_app/screens/master/location/master_location_screen.dart';
 import 'package:thingy_app/screens/master/item/master_item_screen.dart';
 import 'package:thingy_app/screens/master/instance/master_instance_screen.dart';
+import 'package:thingy_app/screens/master/instance/mi_add_screen.dart';
+import 'package:thingy_app/screens/master/instance/mi_edit_screen.dart';
 import 'package:thingy_app/screens/master/currency/master_currency_screen.dart';
 import 'package:thingy_app/screens/master/currency/mc_edit_screen.dart';
 import 'package:thingy_app/screens/master/currency/mc_add_screen.dart';
@@ -22,6 +24,8 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
           AutoRoute(page: MasterLocationRoute.page, path: 'location'),
           AutoRoute(page: MasterItemRoute.page, path: 'item'),
           AutoRoute(page: MasterInstanceRoute.page, path: 'instance'),
+          AutoRoute(page: MiAddRoute.page, path: 'instance/add'),
+          AutoRoute(page: MiEditRoute.page, path: 'instance/:id/edit'),
           AutoRoute(page: MCEditRoute.page, path: 'currency/:id/edit'),
           AutoRoute(page: MasterCurrencyRoute.page, path: 'currency'),
           AutoRoute(page: McAddRoute.page, path: 'currency/add'),

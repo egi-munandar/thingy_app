@@ -4,7 +4,7 @@ import 'dart:convert';
 class InstanceModel {
   final int id;
   final String name;
-  final String currencCode;
+  final String currencyCode;
   final String currency;
   final String currencySymbol;
   final String createdAt;
@@ -12,7 +12,7 @@ class InstanceModel {
   InstanceModel({
     required this.id,
     required this.name,
-    required this.currencCode,
+    required this.currencyCode,
     required this.currency,
     required this.currencySymbol,
     required this.createdAt,
@@ -22,7 +22,7 @@ class InstanceModel {
   InstanceModel copyWith({
     int? id,
     String? name,
-    String? currencCode,
+    String? currencyCode,
     String? currency,
     String? currencySymbol,
     String? createdAt,
@@ -31,7 +31,7 @@ class InstanceModel {
     return InstanceModel(
       id: id ?? this.id,
       name: name ?? this.name,
-      currencCode: currencCode ?? this.currencCode,
+      currencyCode: currencyCode ?? this.currencyCode,
       currency: currency ?? this.currency,
       currencySymbol: currencySymbol ?? this.currencySymbol,
       createdAt: createdAt ?? this.createdAt,
@@ -43,7 +43,7 @@ class InstanceModel {
     return <String, dynamic>{
       'id': id,
       'name': name,
-      'currencCode': currencCode,
+      'currencyCode': currencyCode,
       'currency': currency,
       'currencySymbol': currencySymbol,
       'createdAt': createdAt,
@@ -55,7 +55,7 @@ class InstanceModel {
     return InstanceModel(
       id: map['id'] as int,
       name: map['name'] as String,
-      currencCode: map['currencCode'] as String,
+      currencyCode: map['currencyCode'] as String,
       currency: map['currency'] as String,
       currencySymbol: map['currencySymbol'] as String,
       createdAt: map['createdAt'] as String,
@@ -70,7 +70,7 @@ class InstanceModel {
 
   @override
   String toString() {
-    return 'InstanceModel(id: $id, name: $name, currencCode: $currencCode, currency: $currency, currencySymbol: $currencySymbol, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'InstanceModel(id: $id, name: $name, currencyCode: $currencyCode, currency: $currency, currencySymbol: $currencySymbol, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -79,7 +79,7 @@ class InstanceModel {
 
     return other.id == id &&
         other.name == name &&
-        other.currencCode == currencCode &&
+        other.currencyCode == currencyCode &&
         other.currency == currency &&
         other.currencySymbol == currencySymbol &&
         other.createdAt == createdAt &&
@@ -90,7 +90,7 @@ class InstanceModel {
   int get hashCode {
     return id.hashCode ^
         name.hashCode ^
-        currencCode.hashCode ^
+        currencyCode.hashCode ^
         currency.hashCode ^
         currencySymbol.hashCode ^
         createdAt.hashCode ^

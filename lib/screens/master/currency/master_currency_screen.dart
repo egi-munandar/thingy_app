@@ -49,6 +49,9 @@ class MasterCurrencyScreen extends StatelessWidget {
                           : (state is CurrencyError)
                               ? ErrorScreen(
                                   msg: state.msg,
+                                  refresh: () =>
+                                      BlocProvider.of<CurrencyCubit>(context)
+                                          .getCurrencies(),
                                 )
                               : const LoadingScreen(
                                   msg: "Loading...",

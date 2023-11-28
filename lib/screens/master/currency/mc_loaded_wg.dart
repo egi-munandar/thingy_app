@@ -334,7 +334,7 @@ class LgView extends StatelessWidget {
                 style: TextStyle(color: Colors.red),
               )),
           TextButton(
-              onPressed: () => Navigator.pop(context), child: const Text("NO")),
+              onPressed: () => Navigator.pop(ctx), child: const Text("NO")),
         ],
       ),
     );
