@@ -46,6 +46,7 @@ dependencies:
   flutter_secure_storage_linux: ^1.2.0
   flutter_spinkit: ^5.2.0
   toast: ^0.3.0
+  pluto_grid: ^7.0.2
 
 dev_dependencies:
   flutter_test:

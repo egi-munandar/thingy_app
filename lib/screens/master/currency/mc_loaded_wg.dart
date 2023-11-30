@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pluto_grid/pluto_grid.dart';
 import 'package:thingy_app/constants.dart';
 import 'package:thingy_app/logic/cubit/currency_cubit.dart';
 import 'package:thingy_app/logic/repository/master_repo.dart';
@@ -102,74 +104,75 @@ class _MCLoadedWgState extends State<MCLoadedWg> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              TextFormField(
-                controller: searchText,
-                onFieldSubmitted: (_) => searchList(),
-                validator: (val) => val == null || val.isEmpty
-                    ? 'Please fill your email'
-                    : null,
-                decoration: InputDecoration(
-                  labelText: "Search...",
-                  hintText: "Find Currency...",
-                  prefixIcon: mq.width > Consts.wdt.sm
-                      ? IconButton(
-                          onPressed: () =>
-                              BlocProvider.of<CurrencyCubit>(context)
-                                  .getCurrencies(),
-                          icon: const Icon(Icons.refresh_rounded),
-                          tooltip: "Refresh Data",
-                        )
-                      : null,
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        crs = widget.curs;
-                        searchText.text = '';
-                      });
-                    },
-                    icon: const Icon(Icons.clear),
-                    color: Theme.of(context).primaryColor,
-                    tooltip: 'Clear Search',
-                  ),
-                ),
-              ),
               mq.width <= Consts.wdt.sm
-                  ? SizedBox(
-                      height: mq.height,
-                      child: ListView.builder(
-                        itemBuilder: (context, index) {
-                          CurrencyModel c = crs[index];
-                          return ListTile(
-                            onLongPress: () => deleteCurr(context, c),
-                            onTap: () {
-                              context.router.push(MCEditRoute(
-                                  mcId: c.id,
-                                  updated: (u) {
-                                    if (u) {
-                                      BlocProvider.of<CurrencyCubit>(context)
-                                          .getCurrencies();
-                                    }
-                                  }));
-                            },
-                            leading: CircleAvatar(
-                              child: Text(
-                                c.symbol,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
+                  ? Column(
+                      children: [
+                        TextFormField(
+                          controller: searchText,
+                          onFieldSubmitted: (_) => searchList(),
+                          validator: (val) => val == null || val.isEmpty
+                              ? 'Please fill your email'
+                              : null,
+                          decoration: InputDecoration(
+                            labelText: "Search...",
+                            hintText: "Find Currency...",
+                            prefixIcon: mq.width > Consts.wdt.sm
+                                ? IconButton(
+                                    onPressed: () =>
+                                        BlocProvider.of<CurrencyCubit>(context)
+                                            .getCurrencies(),
+                                    icon: const Icon(Icons.refresh_rounded),
+                                    tooltip: "Refresh Data",
+                                  )
+                                : null,
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  crs = widget.curs;
+                                  searchText.text = '';
+                                });
+                              },
+                              icon: const Icon(Icons.clear),
+                              color: Theme.of(context).primaryColor,
+                              tooltip: 'Clear Search',
                             ),
-                            title: Text(c.name),
-                            subtitle: Text(c.code),
-                          );
-                        },
-                        itemCount: crs.length,
-                      ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: mq.height,
+                          child: ListView.builder(
+                            itemBuilder: (context, index) {
+                              CurrencyModel c = crs[index];
+                              return ListTile(
+                                onLongPress: () => deleteCurr(context, c),
+                                onTap: () {
+                                  context.router.push(MCEditRoute(
+                                      mcId: c.id,
+                                      updated: (u) {
+                                        if (u) {
+                                          BlocProvider.of<CurrencyCubit>(
+                                                  context)
+                                              .getCurrencies();
+                                        }
+                                      }));
+                                },
+                                leading: CircleAvatar(
+                                  child: Text(
+                                    c.symbol,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                title: Text(c.name),
+                                subtitle: Text(c.code),
+                              );
+                            },
+                            itemCount: crs.length,
+                          ),
+                        ),
+                      ],
                     )
-                  : LgView(
-                      sortAsc: sortAsc,
-                      sortIndex: sortIndex,
-                      cols: cols,
-                      crs: crs),
+                  : plutoTbl(context)
             ],
           ),
         ),
@@ -224,7 +227,7 @@ class _MCLoadedWgState extends State<MCLoadedWg> {
           TextButton(
               onPressed: () async {
                 await MasterRepo().deleteCurrency(curr.id).then((_) {
-                  BlocProvider.of<CurrencyCubit>(context).getCurrencies();
+                  BlocProvider.of<CurrencyCubit>(ctx).getCurrencies();
                   Toast.show("Currency Deleted!", duration: 2);
                   Navigator.pop(ctx);
                 }).catchError((er) {
@@ -236,8 +239,132 @@ class _MCLoadedWgState extends State<MCLoadedWg> {
                 style: TextStyle(color: Colors.red),
               )),
           TextButton(
-              onPressed: () => Navigator.pop(context), child: const Text("NO")),
+              onPressed: () => Navigator.pop(ctx), child: const Text("NO")),
         ],
+      ),
+    );
+  }
+
+  SizedBox plutoTbl(BuildContext context) {
+    final columns = [
+      PlutoColumn(
+        title: 'Symbol',
+        field: 'symbol',
+        type: PlutoColumnType.text(),
+      ),
+      PlutoColumn(title: 'Name', field: 'name', type: PlutoColumnType.text()),
+      PlutoColumn(
+          title: 'Native Symbol',
+          field: 'symbolNative',
+          type: PlutoColumnType.text()),
+      PlutoColumn(
+          title: 'Decimal Digits',
+          field: 'decimalDigits',
+          type: PlutoColumnType.number()),
+      PlutoColumn(
+          title: 'Rounding', field: 'rounding', type: PlutoColumnType.number()),
+      PlutoColumn(title: 'Code', field: 'code', type: PlutoColumnType.text()),
+      PlutoColumn(
+          title: 'Plural Name',
+          field: 'namePlural',
+          type: PlutoColumnType.text()),
+    ];
+    final List<PlutoRow> rows = [];
+    List<CurrencyModel> curItems = [];
+
+    Future<PlutoLazyPaginationResponse> fetchCurs(
+        PlutoLazyPaginationRequest request) async {
+      String queryString = "?page=${request.page}";
+      if (request.filterRows.isNotEmpty) {
+        final filterMap = FilterHelper.convertRowsToMap(request.filterRows);
+        for (final filter in filterMap.entries) {
+          for (final type in filter.value) {
+            queryString += "&filter[${filter.key}]";
+            final filterType = type.entries.first;
+            queryString += "[${filterType.key}][]=${filterType.value}";
+          }
+        }
+      }
+      if (request.sortColumn != null && !request.sortColumn!.sort.isNone) {
+        String srt = request.sortColumn!.sort.isAscending ? 'asc' : 'desc';
+        queryString += "&sort=${request.sortColumn!.field},$srt";
+      }
+      final Map<String, dynamic> dataFromServer =
+          await MasterRepo().getCurrencyPaged(queryString);
+      final rows = dataFromServer['data']
+          .map<PlutoRow>((rowData) => PlutoRow.fromJson(rowData));
+      List<CurrencyModel> ci = [];
+      for (var val in dataFromServer['data']) {
+        ci.add(CurrencyModel.fromMap(val));
+      }
+      setState(() {
+        curItems = ci;
+      });
+      return PlutoLazyPaginationResponse(
+          totalPage: dataFromServer['totalPage'], rows: rows.toList());
+    }
+
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.9,
+      child: PlutoGrid(
+        mode: PlutoGridMode.selectWithOneTap,
+        columns: columns,
+        configuration: PlutoGridConfiguration(
+            style: PlutoGridStyleConfig(
+                gridBorderRadius: BorderRadius.circular(10))),
+        onSelected: (e) {
+          final CurrencyModel c = curItems[e.rowIdx!];
+          showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog.adaptive(
+                    title: Text(c.name),
+                    content: Text(e.cell!.value),
+                    actions: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: IconButton(
+                          onPressed: () {
+                            context.router.push(MCEditRoute(
+                                mcId: c.id,
+                                updated: (u) {
+                                  if (u) {
+                                    BlocProvider.of<CurrencyCubit>(context)
+                                        .getCurrencies();
+                                  }
+                                }));
+                            Navigator.pop(ctx);
+                          },
+                          icon: const Icon(Icons.edit_rounded),
+                          color: Colors.amber,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                          deleteCurr(ctx, c);
+                        },
+                        icon: const Icon(Icons.delete),
+                        color: Colors.red,
+                      ),
+                      IconButton(
+                        onPressed: () async {
+                          await Clipboard.setData(
+                                  ClipboardData(text: e.cell!.value))
+                              .then((value) {
+                            Navigator.pop(ctx);
+                          });
+                          Toast.show("${e.cell!.value} copied to clipboard",
+                              duration: 3);
+                        },
+                        icon: const Icon(Icons.copy),
+                        color: Theme.of(context).primaryColor,
+                      )
+                    ],
+                  ));
+        },
+        rows: rows,
+        createFooter: (stateManager) =>
+            PlutoLazyPagination(fetch: fetchCurs, stateManager: stateManager),
       ),
     );
   }
@@ -312,7 +439,7 @@ class LgView extends StatelessWidget {
   Future<void> deleteCurr(BuildContext context, CurrencyModel curr) async {
     showDialog(
       context: context,
-      builder: (BuildContext ctx) => AlertDialog.adaptive(
+      builder: (BuildContext dcCtx) => AlertDialog.adaptive(
         title: const Text(
           "Delete currency?",
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -324,9 +451,9 @@ class LgView extends StatelessWidget {
                 await MasterRepo().deleteCurrency(curr.id).then((_) {
                   BlocProvider.of<CurrencyCubit>(context).getCurrencies();
                   Toast.show("Currency Deleted!", duration: 2);
-                  Navigator.pop(ctx);
+                  Navigator.pop(dcCtx);
                 }).catchError((er) {
-                  Consts().errDialog(ctx, er);
+                  Consts().errDialog(dcCtx, er);
                 });
               },
               child: const Text(
@@ -334,7 +461,7 @@ class LgView extends StatelessWidget {
                 style: TextStyle(color: Colors.red),
               )),
           TextButton(
-              onPressed: () => Navigator.pop(ctx), child: const Text("NO")),
+              onPressed: () => Navigator.pop(dcCtx), child: const Text("NO")),
         ],
       ),
     );
