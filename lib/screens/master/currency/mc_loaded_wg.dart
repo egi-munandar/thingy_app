@@ -8,6 +8,7 @@ import 'package:thingy_app/logic/cubit/currency_cubit.dart';
 import 'package:thingy_app/logic/repository/master_repo.dart';
 import 'package:thingy_app/models/currency_model.dart';
 import 'package:thingy_app/routes/app_router.dart';
+import 'package:thingy_app/screens/master/currency/mc_lv_wg.dart';
 import 'package:toast/toast.dart';
 
 class MCLoadedWg extends StatefulWidget {
@@ -54,129 +55,72 @@ class _MCLoadedWgState extends State<MCLoadedWg> {
   Widget build(BuildContext context) {
     ToastContext().init(context);
     Size mq = MediaQuery.of(context).size;
-    List<DataColumn> cols = [
-      const DataColumn(label: Expanded(child: Text("Action"))),
-      DataColumn(
-        onSort: (ind, asc) => sortColumn(ind, asc),
-        label: const Expanded(
-          child: Text('Symbol'),
-        ),
-      ),
-      DataColumn(
-        onSort: (ind, asc) => sortColumn(ind, asc),
-        label: const Expanded(
-          child: Text('Name'),
-        ),
-      ),
-      DataColumn(
-        onSort: (ind, asc) => sortColumn(ind, asc),
-        label: const Expanded(
-          child: Text('Native Symbol'),
-        ),
-      ),
-      const DataColumn(
-        label: Expanded(
-          child: Text('Decimal Digits'),
-        ),
-      ),
-      const DataColumn(
-        label: Expanded(
-          child: Text('Rounding'),
-        ),
-      ),
-      DataColumn(
-        onSort: (ind, asc) => sortColumn(ind, asc),
-        label: const Expanded(
-          child: Text('Code'),
-        ),
-      ),
-      const DataColumn(
-        label: Expanded(
-          child: Text('Plural Name'),
-        ),
-      ),
-    ];
-    return SingleChildScrollView(
-      child: RefreshIndicator(
-        onRefresh: () =>
-            BlocProvider.of<CurrencyCubit>(context).getCurrencies(),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              mq.width <= Consts.wdt.sm
-                  ? Column(
-                      children: [
-                        TextFormField(
-                          controller: searchText,
-                          onFieldSubmitted: (_) => searchList(),
-                          validator: (val) => val == null || val.isEmpty
-                              ? 'Please fill your email'
-                              : null,
-                          decoration: InputDecoration(
-                            labelText: "Search...",
-                            hintText: "Find Currency...",
-                            prefixIcon: mq.width > Consts.wdt.sm
-                                ? IconButton(
-                                    onPressed: () =>
-                                        BlocProvider.of<CurrencyCubit>(context)
-                                            .getCurrencies(),
-                                    icon: const Icon(Icons.refresh_rounded),
-                                    tooltip: "Refresh Data",
-                                  )
-                                : null,
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  crs = widget.curs;
-                                  searchText.text = '';
-                                });
-                              },
-                              icon: const Icon(Icons.clear),
-                              color: Theme.of(context).primaryColor,
-                              tooltip: 'Clear Search',
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: mq.height,
-                          child: ListView.builder(
-                            itemBuilder: (context, index) {
-                              CurrencyModel c = crs[index];
-                              return ListTile(
-                                onLongPress: () => deleteCurr(context, c),
-                                onTap: () {
-                                  context.router.push(MCEditRoute(
-                                      mcId: c.id,
-                                      updated: (u) {
-                                        if (u) {
-                                          BlocProvider.of<CurrencyCubit>(
-                                                  context)
-                                              .getCurrencies();
-                                        }
-                                      }));
-                                },
-                                leading: CircleAvatar(
-                                  child: Text(
-                                    c.symbol,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                title: Text(c.name),
-                                subtitle: Text(c.code),
-                              );
-                            },
-                            itemCount: crs.length,
-                          ),
-                        ),
-                      ],
-                    )
-                  : plutoTbl(context)
-            ],
+    return mq.width <= Consts.wdt.sm ? const McLvWg() : plutoTbl(context);
+  }
+
+  Column oldSmView(Size mq, BuildContext context) {
+    return Column(
+      children: [
+        TextFormField(
+          controller: searchText,
+          onFieldSubmitted: (_) => searchList(),
+          validator: (val) =>
+              val == null || val.isEmpty ? 'Please fill your email' : null,
+          decoration: InputDecoration(
+            labelText: "Search...",
+            hintText: "Find Currency...",
+            prefixIcon: mq.width > Consts.wdt.sm
+                ? IconButton(
+                    onPressed: () =>
+                        BlocProvider.of<CurrencyCubit>(context).getCurrencies(),
+                    icon: const Icon(Icons.refresh_rounded),
+                    tooltip: "Refresh Data",
+                  )
+                : null,
+            suffixIcon: IconButton(
+              onPressed: () {
+                setState(() {
+                  crs = widget.curs;
+                  searchText.text = '';
+                });
+              },
+              icon: const Icon(Icons.clear),
+              color: Theme.of(context).primaryColor,
+              tooltip: 'Clear Search',
+            ),
           ),
         ),
-      ),
+        SizedBox(
+          height: mq.height,
+          child: ListView.builder(
+            itemBuilder: (context, index) {
+              CurrencyModel c = crs[index];
+              return ListTile(
+                onLongPress: () => deleteCurr(context, c),
+                onTap: () {
+                  context.router.push(MCEditRoute(
+                      mcId: c.id,
+                      updated: (u) {
+                        if (u) {
+                          BlocProvider.of<CurrencyCubit>(context)
+                              .getCurrencies();
+                        }
+                      }));
+                },
+                leading: CircleAvatar(
+                  child: Text(
+                    c.symbol,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                title: Text(c.name),
+                subtitle: Text(c.code),
+              );
+            },
+            itemCount: crs.length,
+          ),
+        ),
+      ],
     );
   }
 
@@ -300,6 +244,7 @@ class _MCLoadedWgState extends State<MCLoadedWg> {
       setState(() {
         curItems = ci;
       });
+      print(queryString);
       return PlutoLazyPaginationResponse(
           totalPage: dataFromServer['totalPage'], rows: rows.toList());
     }

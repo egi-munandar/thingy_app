@@ -40,23 +40,20 @@ class MasterCurrencyScreen extends StatelessWidget {
               tooltip: "Add Currency",
               child: const Icon(Icons.add_rounded),
             ),
-            body: Column(children: [
-              Expanded(
-                  child: (state is CurrencyLoading)
-                      ? const LoadingScreen(msg: 'Loading Currencies...')
-                      : (state is CurrencyLoaded)
-                          ? MCLoadedWg(curs: state.currencies)
-                          : (state is CurrencyError)
-                              ? ErrorScreen(
-                                  msg: state.msg,
-                                  refresh: () =>
-                                      BlocProvider.of<CurrencyCubit>(context)
-                                          .getCurrencies(),
-                                )
-                              : const LoadingScreen(
-                                  msg: "Loading...",
-                                )),
-            ]),
+            body: (state is CurrencyLoading)
+                ? const LoadingScreen(msg: 'Loading Currencies...')
+                : (state is CurrencyLoaded)
+                    ? MCLoadedWg(curs: state.currencies)
+                    : (state is CurrencyError)
+                        ? ErrorScreen(
+                            msg: state.msg,
+                            refresh: () =>
+                                BlocProvider.of<CurrencyCubit>(context)
+                                    .getCurrencies(),
+                          )
+                        : const LoadingScreen(
+                            msg: "Loading...",
+                          ),
           );
         },
       ),
