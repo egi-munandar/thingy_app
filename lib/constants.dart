@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thingy_app/models/user_model.dart';
 import 'package:intl/intl.dart';
 
 class Consts {
-  static const baseUrl =
-      String.fromEnvironment('API_URL', defaultValue: 'http://localhost/api');
   static const ConstWidth wdt = ConstWidth();
   static const ConstFontSize fSize = ConstFontSize();
   String parseErrInput(Map<String, dynamic> err) {
@@ -14,6 +13,12 @@ class Consts {
       st += "\n$k: $v";
     });
     return st;
+  }
+
+  static Future<String> baseUrl() async {
+    final inst = await SharedPreferences.getInstance();
+    final bsurl = inst.getString('apiUrl') ?? 'http://localhost/api';
+    return bsurl;
   }
 
   static Future<UserModel> fetchUser() async {

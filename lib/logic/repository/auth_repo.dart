@@ -6,8 +6,8 @@ import 'package:thingy_app/models/user_model.dart';
 import 'package:http/http.dart' as http;
 
 class AuthRepo {
-  final String baseUrl = Consts.baseUrl;
   Future<UserModel> login(Map<String, dynamic> data) async {
+    final String baseUrl = await Consts.baseUrl();
     String tokenName =
         '${Platform.localHostname} - ${Platform.operatingSystem} ${Platform.operatingSystemVersion}';
     final res = await http.post(Uri.parse("$baseUrl/login"), body: {
@@ -32,6 +32,7 @@ class AuthRepo {
   }
 
   Future<String> logout() async {
+    final String baseUrl = await Consts.baseUrl();
     final UserModel user = await Consts.fetchUser();
     print(user);
     final res = await http.post(Uri.parse("$baseUrl/logout-app"), headers: {

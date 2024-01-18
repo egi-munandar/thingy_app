@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:thingy_app/constants.dart';
+import 'package:thingy_app/screens/auth/change_api_url.dart';
 import 'package:thingy_app/screens/home_screen.dart';
 import 'package:thingy_app/screens/master/master_screen.dart';
 import 'package:thingy_app/screens/master/location/master_location_screen.dart';
@@ -31,12 +32,14 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
           AutoRoute(page: McAddRoute.page, path: 'currency/add'),
         ]),
         AutoRoute(page: LoginRoute.page, path: '/login'),
+        AutoRoute(page: ChangeApiUrlRoute.page, path: '/change-api-url'),
       ];
 
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) async {
     try {
-      if (resolver.route.name == LoginRoute.name) {
+      if (resolver.route.name == LoginRoute.name ||
+          resolver.route.name == ChangeApiUrlRoute.name) {
         resolver.next();
       } else {
         await Consts.fetchUser().then((value) => resolver.next());
