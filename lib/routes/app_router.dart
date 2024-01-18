@@ -4,6 +4,7 @@ import 'package:thingy_app/constants.dart';
 import 'package:thingy_app/screens/auth/change_api_url.dart';
 import 'package:thingy_app/screens/home_screen.dart';
 import 'package:thingy_app/screens/master/master_screen.dart';
+import 'package:thingy_app/screens/master/currency/master_currency_screen.dart';
 import 'package:thingy_app/screens/master/location/master_location_screen.dart';
 import 'package:thingy_app/screens/master/item/master_item_screen.dart';
 import 'package:thingy_app/screens/auth/login_screen.dart';
@@ -15,7 +16,8 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
   List<AutoRoute> get routes => [
         AutoRoute(page: HomeRoute.page, initial: true, path: '/home'),
         AutoRoute(page: MasterRoute.page, path: '/master', children: [
-          RedirectRoute(path: '', redirectTo: 'location'),
+          RedirectRoute(path: '', redirectTo: 'currency'),
+          AutoRoute(page: MasterCurrencyRoute.page, path: 'currency'),
           AutoRoute(page: MasterLocationRoute.page, path: 'location'),
           AutoRoute(page: MasterItemRoute.page, path: 'item'),
         ]),

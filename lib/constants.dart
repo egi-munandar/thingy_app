@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thingy_app/models/user_model.dart';
@@ -36,6 +37,32 @@ class Consts {
     DateTime dt = DateTime.parse(text);
     String formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(dt);
     return formattedDate.toString();
+  }
+
+  Future<dynamic> errDialog(BuildContext context, er) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog.adaptive(
+        title: const Text(
+          "Error!",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          er.toString(),
+          style: const TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.red,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              "OK",
+              style: TextStyle(color: Colors.white),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
 

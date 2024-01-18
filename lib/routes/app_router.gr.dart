@@ -37,6 +37,12 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    MasterCurrencyRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const MasterCurrencyScreen(),
+      );
+    },
     MasterItemRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -121,6 +127,20 @@ class LoginRouteArgs {
   String toString() {
     return 'LoginRouteArgs{key: $key, onResult: $onResult}';
   }
+}
+
+/// generated route for
+/// [MasterCurrencyScreen]
+class MasterCurrencyRoute extends PageRouteInfo<void> {
+  const MasterCurrencyRoute({List<PageRouteInfo>? children})
+      : super(
+          MasterCurrencyRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MasterCurrencyRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
 }
 
 /// generated route for
