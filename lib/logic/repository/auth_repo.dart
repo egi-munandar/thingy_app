@@ -34,14 +34,12 @@ class AuthRepo {
   Future<String> logout() async {
     final String baseUrl = await Consts.baseUrl();
     final UserModel user = await Consts.fetchUser();
-    print(user);
     final res = await http.post(Uri.parse("$baseUrl/logout-app"), headers: {
       'Accept': 'application/json',
       'Authorization': "Bearer ${user.apiToken}"
     }).catchError((er) {
       throw "Can't connect to server";
     });
-    print(res.body);
     if (res.statusCode == 200) {
       return "logged out";
     } else if (res.statusCode == 401) {

@@ -308,4 +308,27 @@ class MasterRepo {
       throw "Server Error! ${res.statusCode}";
     }
   }
+
+  //user
+  Future<UserModel> updateUser(Map<String, dynamic> data, userId) async {
+    final String baseUrl = await Consts.baseUrl();
+    final UserModel user = await Consts.fetchUser();
+    final res = await http
+        .post(Uri.parse("$baseUrl/user/$userId"),
+            headers: {
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ${user.apiToken}',
+            },
+            body: data)
+        .catchError((er) => throw ('Can\'t connect to server'));
+    if (res.statusCode == 200) {
+      print(jsonDecode(res.body));
+      UserModel usr = UserModel.fromMap(jsonDecode(res.body));
+      return usr;
+    } else if (res.statusCode == 422) {
+      throw "Please check Your Input";
+    } else {
+      throw "Error! code ${res.statusCode}";
+    }
+  }
 }

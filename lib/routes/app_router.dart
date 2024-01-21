@@ -6,12 +6,14 @@ import 'package:thingy_app/models/currency_model.dart';
 import 'package:thingy_app/screens/home_screen.dart';
 import 'package:thingy_app/screens/master/master_screen.dart';
 import 'package:thingy_app/screens/master/currency/master_currency_screen.dart';
+import 'package:thingy_app/screens/master/currency/select_currency_screen.dart';
 import 'package:thingy_app/screens/master/currency/mc_detail_screen.dart';
 import 'package:thingy_app/screens/master/currency/mc_edit_screen.dart';
 import 'package:thingy_app/screens/master/currency/mc_add_screen.dart';
 import 'package:thingy_app/screens/master/location/master_location_screen.dart';
 import 'package:thingy_app/screens/master/item/master_item_screen.dart';
 import 'package:thingy_app/screens/auth/login_screen.dart';
+import 'package:thingy_app/screens/profile_screen.dart';
 part 'app_router.gr.dart';
 
 @AutoRouterConfig()
@@ -27,9 +29,11 @@ class AppRouter extends _$AppRouter implements AutoRouteGuard {
           AutoRoute(page: McEditRoute.page, path: 'currency/edit'),
           AutoRoute(page: MasterLocationRoute.page, path: 'location'),
           AutoRoute(page: MasterItemRoute.page, path: 'item'),
+          AutoRoute(page: SelectCurrencyRoute.page),
         ]),
         AutoRoute(page: LoginRoute.page, path: '/login'),
         AutoRoute(page: ChangeApiUrlRoute.page, path: '/change-api-url'),
+        AutoRoute(page: ProfileRoute.page, path: '/profile'),
       ];
 
   @override

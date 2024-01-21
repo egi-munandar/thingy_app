@@ -3,18 +3,22 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
+import 'package:thingy_app/models/currency_model.dart';
+
 class UserModel {
   final int id;
   final String email;
   final String name;
   final List<dynamic>? perms;
   final String apiToken;
+  final CurrencyModel? currency;
   UserModel({
     required this.id,
     required this.email,
     required this.name,
     this.perms,
     required this.apiToken,
+    this.currency,
   });
 
   UserModel copyWith({
@@ -23,6 +27,7 @@ class UserModel {
     String? name,
     List<dynamic>? perms,
     String? apiToken,
+    CurrencyModel? currency,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -30,6 +35,7 @@ class UserModel {
       name: name ?? this.name,
       perms: perms ?? this.perms,
       apiToken: apiToken ?? this.apiToken,
+      currency: currency ?? this.currency,
     );
   }
 
@@ -40,6 +46,7 @@ class UserModel {
       'name': name,
       'perms': perms,
       'apiToken': apiToken,
+      'currency': currency?.toMap(),
     };
   }
 
@@ -52,6 +59,9 @@ class UserModel {
           ? List<dynamic>.from((map['perms'] as List<dynamic>))
           : null,
       apiToken: map['apiToken'] as String,
+      currency: map['currency'] != null
+          ? CurrencyModel.fromMap(map['currency'] as Map<String, dynamic>)
+          : null,
     );
   }
 
@@ -62,7 +72,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, email: $email, name: $name, perms: $perms, apiToken: $apiToken)';
+    return 'UserModel(id: $id, email: $email, name: $name, perms: $perms, apiToken: $apiToken, currency: $currency)';
   }
 
   @override
@@ -73,7 +83,8 @@ class UserModel {
         other.email == email &&
         other.name == name &&
         listEquals(other.perms, perms) &&
-        other.apiToken == apiToken;
+        other.apiToken == apiToken &&
+        other.currency == currency;
   }
 
   @override
@@ -82,6 +93,7 @@ class UserModel {
         email.hashCode ^
         name.hashCode ^
         perms.hashCode ^
-        apiToken.hashCode;
+        apiToken.hashCode ^
+        currency.hashCode;
   }
 }

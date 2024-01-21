@@ -92,6 +92,22 @@ abstract class _$AppRouter extends RootStackRouter {
         ),
       );
     },
+    ProfileRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const ProfileScreen(),
+      );
+    },
+    SelectCurrencyRoute.name: (routeData) {
+      final args = routeData.argsAs<SelectCurrencyRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: SelectCurrencyScreen(
+          key: args.key,
+          onSelect: args.onSelect,
+        ),
+      );
+    },
   };
 }
 
@@ -330,5 +346,57 @@ class McEditRouteArgs {
   @override
   String toString() {
     return 'McEditRouteArgs{key: $key, currency: $currency, onResult: $onResult}';
+  }
+}
+
+/// generated route for
+/// [ProfileScreen]
+class ProfileRoute extends PageRouteInfo<void> {
+  const ProfileRoute({List<PageRouteInfo>? children})
+      : super(
+          ProfileRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'ProfileRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [SelectCurrencyScreen]
+class SelectCurrencyRoute extends PageRouteInfo<SelectCurrencyRouteArgs> {
+  SelectCurrencyRoute({
+    Key? key,
+    required dynamic Function(CurrencyModel?) onSelect,
+    List<PageRouteInfo>? children,
+  }) : super(
+          SelectCurrencyRoute.name,
+          args: SelectCurrencyRouteArgs(
+            key: key,
+            onSelect: onSelect,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'SelectCurrencyRoute';
+
+  static const PageInfo<SelectCurrencyRouteArgs> page =
+      PageInfo<SelectCurrencyRouteArgs>(name);
+}
+
+class SelectCurrencyRouteArgs {
+  const SelectCurrencyRouteArgs({
+    this.key,
+    required this.onSelect,
+  });
+
+  final Key? key;
+
+  final dynamic Function(CurrencyModel?) onSelect;
+
+  @override
+  String toString() {
+    return 'SelectCurrencyRouteArgs{key: $key, onSelect: $onSelect}';
   }
 }

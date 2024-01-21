@@ -11,6 +11,7 @@ class AuthCubit extends Cubit<AuthState> {
   void emitAuthUser(UserModel userModel) => emit(AuthUser(user: userModel));
   void emitLogout() => emit(AuthLoggedOut());
   Future<void> logoutApp() async {
+    emit(AuthLoading());
     const storage = FlutterSecureStorage();
     await AuthRepo().logout().then((_) async {
       await storage.delete(key: 'user');
@@ -20,6 +21,7 @@ class AuthCubit extends Cubit<AuthState> {
         await storage.delete(key: 'user');
         emit(AuthLoggedOut());
       } else {
+        emit(AuthInitial());
         throw er.toString();
       }
     });
